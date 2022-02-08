@@ -1,0 +1,51 @@
+<link rel="stylesheet" href="translating.css">
+
+<canvas id="canvas"></canvas>
+<div id="uiContainer">
+    <div id="ui">
+        <div id="x"></div>
+        <div id="y"></div>
+    </div>
+</div>
+
+<!-- Vertex Shader -->
+<script id="vertex-shader-2d" type="x-shader/x-vertex">
+    attribute vec2 a_position;
+
+    uniform vec2 u_resolution;
+    uniform vec2 u_translation;
+    uniform vec2 u_rotation;
+    uniform vec2 u_scale;
+
+    void main(){
+        // Add in the translation
+        vec2 position = a_position+ u_translation;
+
+        // Convert the position from pixels to 0.0 to 1.0
+        vec2 zeroToOne = position / u_resolution;
+
+        // Convert from 0 -> 1 to 0 -> 2
+        vec2 zeroToTwo = zeroToOne * 2.0;
+
+        // Convert from 0 -> 2 to -1 -> +1
+        vec2 clipSpace = zeroToTwo - 1.0;
+
+        // Bind to gl_Position
+        gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+    }
+</script>
+
+<!-- Fragment Shader -->
+<script id="fragment-shader-2d" type="x-shader/x-fragment">
+    precision mediump float;
+
+    uniform vec4 u_color;
+
+    void main(){
+        gl_FragColor = u_color;
+    }
+
+</script>
+
+<script src="webgl-lessons-ui.js"></script>
+<script src="translating.js"></script>
